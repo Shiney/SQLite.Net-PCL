@@ -21,9 +21,11 @@
 
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace SQLite.Net
 {
+    [PublicAPI]
     public class CreateTablesResult
     {
         internal CreateTablesResult()
@@ -31,6 +33,8 @@ namespace SQLite.Net
             Results = new Dictionary<Type, int>();
         }
 
+        [NotNull]
+        [PublicAPI]
         public Dictionary<Type, int> Results { get; private set; }
     }
 }
