@@ -100,18 +100,6 @@ namespace SQLite.Net.Async
         }
 
         [PublicAPI]
-        public class CreateTablesResult
-        {
-            [PublicAPI]
-            public Dictionary<Type, int> Results { get; private set; }
-
-            internal CreateTablesResult()
-            {
-                Results = new Dictionary<Type, int>();
-            }
-        }
-
-        [PublicAPI]
         public Task<CreateTablesResult> CreateTablesAsync([NotNull] params Type[] types)
         {
             if (types == null)
