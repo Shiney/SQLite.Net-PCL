@@ -24,23 +24,27 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace SQLite.Net.Async
 {
     public class AsyncTableQuery<T>
         where T : new()
     {
-        private readonly TableQuery<T> _innerQuery;
-        private readonly TaskScheduler _taskScheduler;
-        private readonly TaskCreationOptions _taskCreationOptions = TaskCreationOptions.None;
+        [NotNull] private readonly TableQuery<T> _innerQuery;
+        private readonly TaskCreationOptions _taskCreationOptions;
+        [CanBeNull] private readonly TaskScheduler _taskScheduler;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="innerQuery"></param>
-        /// <param name="taskScheduler">If null this parameter will be TaskScheduler.Default (evaluated when used in each method, not in ctor)</param>
+        /// <param name="taskScheduler">
+        ///     If null this parameter will be TaskScheduler.Default (evaluated when used in each method,
+        ///     not in ctor)
+        /// </param>
         /// <param name="taskCreationOptions">Defaults to DenyChildAttach</param>
-        public AsyncTableQuery(TableQuery<T> innerQuery, TaskScheduler taskScheduler = null, TaskCreationOptions taskCreationOptions = TaskCreationOptions.None)
+        public AsyncTableQuery([NotNull] TableQuery<T> innerQuery, [CanBeNull] TaskScheduler taskScheduler = null,
+            TaskCreationOptions taskCreationOptions = TaskCreationOptions.None)
         {
             if (innerQuery == null)
             {
@@ -51,7 +55,7 @@ namespace SQLite.Net.Async
             _taskCreationOptions = taskCreationOptions;
         }
 
-        public AsyncTableQuery<T> Where(Expression<Func<T, bool>> predExpr)
+        public AsyncTableQuery<T> Where([NotNull] Expression<Func<T, bool>> predExpr)
         {
             if (predExpr == null)
             {
@@ -70,7 +74,7 @@ namespace SQLite.Net.Async
             return new AsyncTableQuery<T>(_innerQuery.Take(n), _taskScheduler ?? TaskScheduler.Default, _taskCreationOptions);
         }
 
-        public AsyncTableQuery<T> OrderBy<TValue>(Expression<Func<T, TValue>> orderExpr)
+        public AsyncTableQuery<T> OrderBy<TValue>([NotNull] Expression<Func<T, TValue>> orderExpr)
         {
             if (orderExpr == null)
             {
@@ -79,7 +83,7 @@ namespace SQLite.Net.Async
             return new AsyncTableQuery<T>(_innerQuery.OrderBy(orderExpr), _taskScheduler ?? TaskScheduler.Default, _taskCreationOptions);
         }
 
-        public AsyncTableQuery<T> OrderByDescending<TValue>(Expression<Func<T, TValue>> orderExpr)
+        public AsyncTableQuery<T> OrderByDescending<TValue>([NotNull] Expression<Func<T, TValue>> orderExpr)
         {
             if (orderExpr == null)
             {
@@ -88,7 +92,7 @@ namespace SQLite.Net.Async
             return new AsyncTableQuery<T>(_innerQuery.OrderByDescending(orderExpr), _taskScheduler ?? TaskScheduler.Default, _taskCreationOptions);
         }
 
-        public AsyncTableQuery<T> ThenBy<TValue>(Expression<Func<T, TValue>> orderExpr)
+        public AsyncTableQuery<T> ThenBy<TValue>([NotNull] Expression<Func<T, TValue>> orderExpr)
         {
             if (orderExpr == null)
             {
@@ -97,7 +101,7 @@ namespace SQLite.Net.Async
             return new AsyncTableQuery<T>(_innerQuery.ThenBy(orderExpr), _taskScheduler ?? TaskScheduler.Default, _taskCreationOptions);
         }
 
-        public AsyncTableQuery<T> ThenByDescending<TValue>(Expression<Func<T, TValue>> orderExpr)
+        public AsyncTableQuery<T> ThenByDescending<TValue>([NotNull] Expression<Func<T, TValue>> orderExpr)
         {
             if (orderExpr == null)
             {
@@ -106,13 +110,12 @@ namespace SQLite.Net.Async
             return new AsyncTableQuery<T>(_innerQuery.ThenByDescending(orderExpr), _taskScheduler ?? TaskScheduler.Default, _taskCreationOptions);
         }
 
-
         public Task<List<T>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return Task.Factory.StartNew(() =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                using (((SQLiteConnectionWithLock)_innerQuery.Connection).Lock())
+                using (((SQLiteConnectionWithLock) _innerQuery.Connection).Lock())
                 {
                     return _innerQuery.ToList();
                 }
@@ -124,7 +127,7 @@ namespace SQLite.Net.Async
             return Task.Factory.StartNew(() =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                using (((SQLiteConnectionWithLock)_innerQuery.Connection).Lock())
+                using (((SQLiteConnectionWithLock) _innerQuery.Connection).Lock())
                 {
                     return _innerQuery.Count();
                 }
@@ -136,7 +139,7 @@ namespace SQLite.Net.Async
             return Task.Factory.StartNew(() =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                using (((SQLiteConnectionWithLock)_innerQuery.Connection).Lock())
+                using (((SQLiteConnectionWithLock) _innerQuery.Connection).Lock())
                 {
                     return _innerQuery.ElementAt(index);
                 }
@@ -161,7 +164,7 @@ namespace SQLite.Net.Async
             return Task.Factory.StartNew(() =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                using (((SQLiteConnectionWithLock)_innerQuery.Connection).Lock())
+                using (((SQLiteConnectionWithLock) _innerQuery.Connection).Lock())
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     return _innerQuery.FirstOrDefault();
