@@ -30,6 +30,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using JetBrains.Annotations;
 using SQLite.Net.Attributes;
 using SQLite.Net.Interop;
 
@@ -38,6 +39,7 @@ namespace SQLite.Net
     /// <summary>
     ///     Represents an open connection to a SQLite database.
     /// </summary>
+    [PublicAPI]
     public class SQLiteConnection : IDisposable
     {
         internal static readonly IDbHandle NullHandle = default(IDbHandle);
@@ -91,6 +93,7 @@ namespace SQLite.Net
         ///     Any extra type mappings that you wish to use for overriding the default for creating
         ///     column definitions for SQLite DDL in the class Orm (snake in Swedish).
         /// </param>
+        [PublicAPI]
         public SQLiteConnection(ISQLitePlatform sqlitePlatform, string databasePath, bool storeDateTimeAsTicks = false, IBlobSerializer serializer = null, IDictionary<Type, string> extraTypeMappings = null)
             : this(
                 sqlitePlatform, databasePath, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create, storeDateTimeAsTicks, serializer, extraTypeMappings)
@@ -120,6 +123,7 @@ namespace SQLite.Net
         ///     Any extra type mappings that you wish to use for overriding the default for creating
         ///     column definitions for SQLite DDL in the class Orm (snake in Swedish).
         /// </param>
+        [PublicAPI]
         public SQLiteConnection(ISQLitePlatform sqlitePlatform, string databasePath, SQLiteOpenFlags openFlags,
                                 bool storeDateTimeAsTicks = false, IBlobSerializer serializer = null,
                                 IDictionary<Type, string> extraTypeMappings = null)
@@ -151,18 +155,25 @@ namespace SQLite.Net
             BusyTimeout = TimeSpan.FromSeconds(0.1);
         }
 
+        [PublicAPI]
         public IBlobSerializer Serializer { get; private set; }
 
+        [PublicAPI]
         public IDbHandle Handle { get; private set; }
 
+        [PublicAPI]
         public string DatabasePath { get; private set; }
 
+        [PublicAPI]
         public bool TimeExecution { get; set; }
 
+        [PublicAPI]
         public ITraceListener TraceListener { get; set; }
 
+        [PublicAPI]
         public bool StoreDateTimeAsTicks { get; private set; }
 
+        [PublicAPI]
         public IDictionary<Type, string> ExtraTypeMappings { get; private set; }
 
         /// <summary>

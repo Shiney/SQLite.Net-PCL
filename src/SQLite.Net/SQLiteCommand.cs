@@ -27,9 +27,11 @@ using System.Diagnostics;
 using System.Linq;
 using SQLite.Net.Interop;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace SQLite.Net
 {
+    [PublicAPI]
     public class SQLiteCommand
     {
         internal static IntPtr NegativePointer = new IntPtr(-1);
